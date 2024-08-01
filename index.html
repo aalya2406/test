@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Insight Assistant</title>
+</head>
+<body>
+    <h1>Document Insight Assistant</h1>
+    <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
+        <label for="files">Choose files:</label>
+        <input type="file" id="files" name="files" multiple>
+        <br><br>
+        <label for="prompt">Enter your prompt:</label>
+        <textarea id="prompt" name="prompt" rows="4" cols="50"></textarea>
+        <br><br>
+        <button type="submit">Upload and Submit</button>
+    </form>
+
+    <div id="results"></div>
+
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData();
+            const files = document.getElementById('files').files;
+            const prompt = document.getElementById('prompt').value;
+
+            for (let i = 0; i < files.length; i++) {
+                formData.append('files', files[i]);
+            }
+            formData.append('prompt', prompt);
+
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+            document.getElementById('results').innerHTML = `<h2>Response:</h2><p>${result.response}</p>`;
+        });
+    </script>
+</body>
+</html>
